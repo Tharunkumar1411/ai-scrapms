@@ -1,7 +1,6 @@
 const express = require("express");
+const { scrapAndSummarize } = require("./api");
 const router = express.Router();
-
-const scrapAndSummarize = require("./api/index.js").scrapAndSummarize;
 
 router.get("/api/scrape", scrapAndSummarize);
 

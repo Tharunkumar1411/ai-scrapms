@@ -34,9 +34,9 @@ async function warmUpModel(model = 'llama3.2') {
 }
 
 const getPrompt = (text) => {
-    return `You are an AI summarizer. Your job is to read a raw HTML content string and return a structured JSON summary in the following format. The input text may come from news articles, blogs, product pages, documentation, or informational websites.
+    return `You are an AI summarizer. Your job is to read a raw HTML content string and return a structured JSON summary in the following format. The input text may come from news articles, blogs, product pages, documentation, or informational websites. And summary should must be long enough not short likewise summay points also keep in mind
 
-        Return JSON only in the format:
+        keep this in mind Return valid JSON only in the format:
         {
         "title": "Main headline or page title (if found)",
         "summary": "A 3-4 sentence concise summary of the page content",

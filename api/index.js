@@ -35,13 +35,13 @@ async function scrapAndSummarize(req, res){
         pageText = await scrapeWithCheerio(url);
         }
 
-        const limitedText = getPrompt(pageText.slice(0, 4000));
+        const limitedText = getPrompt(pageText.slice(0, 10000));
         const completion = await queryOllama(limitedText);
-        console.log("LLM response:", completion);
+        const summaryObject = JSON.parse(completion);
 
-        const summary = completion.choices[0].message.content;
+        console.log("LLM response:", summaryObject);
 
-        res.json({ summary });
+        res.send({ summaryObject });
     } catch (error) {
         console.error("Error:", error.message);
         res.status(500).json({ error: "Failed to summarize the page" });
