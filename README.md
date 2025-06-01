@@ -1,5 +1,3 @@
-Here’s a **complete `README.md`** content tailored for your project — it explains:
-
 * Project functionality
 * Ollama integration (local only)
 * Reason for not using OpenAI
@@ -143,10 +141,3 @@ PRs welcome. If you'd like to add cloud support for Ollama or improve scraping c
 ## 📜 License
 
 MIT
-
-```
-
----
-
-Let me know if you want this tailored to a multi-folder repo (like `/frontend`, `/backend`), or if you’d like the frontend section auto-filled with table + filter code description.
-```
