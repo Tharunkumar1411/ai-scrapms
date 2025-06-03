@@ -1,42 +1,37 @@
 const axios = require("axios");
 
-async function queryOllama(prompt, model = 'llama3.2') {   
-    try {
-      const res = await axios.post('http://127.0.0.1:11434/api/generate', {
-        model,
-        prompt,
-        stream: false
-      });
-  
-      return res.data.response || '[empty response]';
-    } catch (err) {
-      console.error('Ollama error:', err.message);
-      throw err;
-    }
-}
+const GEMINI_API_KEY = 'AIzaSyC3oD0I-kqklFr-9tEFH3sbJpCEYtU4Ebw'; // Replace with your real key or use env variable
 
-async function warmUpModel(model = 'llama3.2') {
-    try {
-      const res = await axios.post('http://127.0.0.1:11434/api/generate', {
-        model,
-        prompt: 'Hello',
-        stream: false
-      });
-  
-      if (res.data.done_reason === 'load') {
-        console.log("🌀 Model was loading, warm-up complete.");
-      } else {
-        console.log("✅ Model already warm.");
+async function queryGemini(prompt) {
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+  const payload = {
+    contents: [
+      {
+        parts: [{ text: prompt }]
       }
-    } catch (err) {
-      console.error("🔥 Error warming up model:", err.message);
-    }
+    ]
+  };
+
+  try {
+    const res = await axios.post(endpoint, payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const text = res.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    return text || '[empty response]';
+  } catch (err) {
+    console.error('Gemini API error:', err.response?.data || err.message);
+    throw err;
+  }
 }
 
 const getPrompt = (text) => {
     return `You are an AI summarizer. Your job is to read a raw HTML content string and return a structured JSON summary in the following format. The input text may come from news articles, blogs, product pages, documentation, or informational websites. And summary should must be long enough not short likewise summay points also keep in mind
 
-        keep this in mind Return valid JSON only in the format:
+        Strictly return only the JSON object without any markdown formatting
         {
         "title": "Main headline or page title (if found)",
         "summary": "A 3-4 sentence concise summary of the page content",
@@ -54,12 +49,18 @@ const getPrompt = (text) => {
 
         Do not return any commentary or explanation. Return only valid JSON.
 
-        Input text: ${text}
-    `
+        Input text: ${text}`
 }
 
+function extractJSON(rawText) {
+  const match = rawText.match(/{[\s\S]*}/);
+  if (!match) throw new Error("No JSON found in response");
+  return JSON.parse(match[0]);
+}
+
+
 module.exports = {
-    queryOllama,
-    warmUpModel,
-    getPrompt
+    queryGemini,
+    getPrompt,
+    extractJSON
 };

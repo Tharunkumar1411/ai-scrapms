@@ -1,7 +1,7 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const puppeteer = require("puppeteer");
-const { getPrompt, queryOllama } = require("../helper");
+const { getPrompt, queryGemini, extractJSON } = require("../helper");
 
 const scrapeWithCheerio = async (url) => {
     const response = await axios.get(url);
@@ -10,7 +10,6 @@ const scrapeWithCheerio = async (url) => {
     return rawText;
 };
   
-  // 🔹 Function to scrape using Puppeteer (Dynamic Pages)
 const scrapeWithPuppeteer = async (url) => {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
@@ -28,20 +27,16 @@ async function scrapAndSummarize(req, res){
         let pageText = "";
 
         if (mode === "dynamic") {
-        console.log("Using Puppeteer to scrape dynamic content...");
         pageText = await scrapeWithPuppeteer(url);
         } else {
-        console.log("Using Cheerio to scrape static content...");
         pageText = await scrapeWithCheerio(url);
         }
 
         const limitedText = getPrompt(pageText.slice(0, 10000));
-        const completion = await queryOllama(limitedText);
-        const summaryObject = JSON.parse(completion);
+        const completion = await queryGemini(limitedText);
+        const structured = extractJSON(completion);
 
-        console.log("LLM response:", summaryObject);
-
-        res.send({ summaryObject });
+        res.send({ structured });
     } catch (error) {
         console.error("Error:", error.message);
         res.status(500).json({ error: "Failed to summarize the page" });

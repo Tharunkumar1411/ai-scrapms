@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google/genai": "^1.0.0",
     "@llama-node/core": "^0.1.6",
     "@llama-node/llama-cpp": "^0.1.6",
     "axios": "^1.9.0",
