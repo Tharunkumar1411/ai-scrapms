@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { warmUpModel, queryGemini } = require("./helper");
 const router = require("./router");
 
 const app = express();
