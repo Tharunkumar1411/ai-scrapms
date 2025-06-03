@@ -39,7 +39,7 @@ async function scrapAndSummarize(req, res){
         res.send({ structured });
     } catch (error) {
         console.error("Error:", error.message);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "The model is overloaded. Please try again later."});
     }
 };
 
